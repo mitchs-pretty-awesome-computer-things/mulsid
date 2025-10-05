@@ -1,0 +1,16 @@
+{
+	"version": "0.0.1",
+	"name": "mulsid",
+	"module": "index.ts",
+	"type": "module",
+	"scripts": {
+		"fmt": "bunx biome check --write"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.5",
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	}
+}
