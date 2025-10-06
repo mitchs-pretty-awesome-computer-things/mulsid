@@ -1,3 +1,10 @@
+/**
+ * @copyright 2025 Mitch's Pretty Awesome Computer Things LLC
+ * @author Mitchell Adair
+ * @see https://github.com/mitchwadair
+ * @license MIT
+ */
+
 const ALPHABET =
 	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" as const;
 const ZERO = ALPHABET[0];
