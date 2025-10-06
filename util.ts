@@ -1,17 +1,17 @@
-import crypto from "node:crypto";
-
 const ALPHABET =
 	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" as const;
-export const BASE = ALPHABET.length;
 const ZERO = ALPHABET[0];
+
+export const BASE = ALPHABET.length;
 // 100ms per tick to keep timestamp as short as possible while still being able to
 // generate a good number of them per second
-const TICK_WIDTH = 100;
-
-const TIMESTAMP_LENGTH = 7;
-const MAX_TIMESTAMP_VALUE = BASE ** TIMESTAMP_LENGTH;
+export const TICK_WIDTH = 100;
+export const TIMESTAMP_LENGTH = 7;
+export const MAX_TIMESTAMP_VALUE = BASE ** TIMESTAMP_LENGTH - 1;
 export const RANDOM_LENGTH = 3;
 export const MAX_RANDOMNESS_VALUE = BASE ** RANDOM_LENGTH;
+export const MULSID_LENGTH = TIMESTAMP_LENGTH + RANDOM_LENGTH;
+
 const BIT_MASK_18_BITS = 0x3ffff;
 
 export function getTimestamp(time: number = Date.now()) {
@@ -79,10 +79,4 @@ function safeRandomBits() {
 
 export function encodeRandomness() {
 	return toBase62(BigInt(safeRandomBits()), RANDOM_LENGTH);
-}
-
-export function decodeTimestamp(id: string) {
-	const time = id.slice(0, TIMESTAMP_LENGTH);
-	const ticks = Number(fromBase62(time));
-	return ticks * TICK_WIDTH;
 }

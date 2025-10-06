@@ -17,7 +17,9 @@ function incrementRandomness(rand: string) {
 	return toBase62(incremented, RANDOM_LENGTH);
 }
 
-function monotonicMUSLIDFactory() {
+export function monotonicMUSLIDFactory(
+	randomGenerator: () => string = encodeRandomness,
+) {
 	let lastTick = -1;
 	let lastRand = "";
 	return function mulsid(timestamp: number = Date.now()) {
@@ -26,11 +28,11 @@ function monotonicMUSLIDFactory() {
 			try {
 				lastRand = incrementRandomness(lastRand);
 			} catch {
-				lastRand = encodeRandomness();
+				lastRand = randomGenerator();
 				lastTick = lastTick + 1;
 			}
 		} else {
-			lastRand = encodeRandomness();
+			lastRand = randomGenerator();
 			lastTick = time;
 		}
 
