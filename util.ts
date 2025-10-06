@@ -10,16 +10,19 @@ const ALPHABET =
 const ZERO = ALPHABET[0];
 
 export const BASE = ALPHABET.length;
-// 100ms per tick to keep timestamp as short as possible while still being able to
-// generate a good number of them per second
-export const TICK_WIDTH = 100;
 export const TIMESTAMP_LENGTH = 7;
 export const MAX_TIMESTAMP_VALUE = BASE ** TIMESTAMP_LENGTH - 1;
 export const RANDOM_LENGTH = 3;
 export const MAX_RANDOMNESS_VALUE = BASE ** RANDOM_LENGTH;
 export const MULSID_LENGTH = TIMESTAMP_LENGTH + RANDOM_LENGTH;
 
-const BIT_MASK_18_BITS = 0x3ffff;
+const THOUSAND_YEARS = 1000 * 60 * 60 * 24 * 365.25 * 1000; // a thousand years in ms
+// minimum ms per tick to be able to fit to TIMESTAMP_LENGTH and also generate
+// as many IDs as possible per-second with minimal collision risk
+export const TICK_WIDTH = Math.ceil(THOUSAND_YEARS / MAX_TIMESTAMP_VALUE);
+
+const BITS_FOR_RANDOMNESS = Math.ceil(Math.log2(MAX_RANDOMNESS_VALUE));
+const BIT_MASK = (1 << BITS_FOR_RANDOMNESS) - 1;
 
 export function getTimestamp(time: number = Date.now()) {
 	return Math.floor(time / TICK_WIDTH);
@@ -65,21 +68,22 @@ export function encodeTime(timestamp: number) {
 	return toBase62(BigInt(timestamp), TIMESTAMP_LENGTH);
 }
 
-function random18Bits() {
-	const buf = crypto.getRandomValues(new Uint8Array(RANDOM_LENGTH)); // 3 random bytes (24 bits)
+function unsafeRandomBits() {
+	const buf = crypto.getRandomValues(new Uint8Array(RANDOM_LENGTH)); // RANDOM_LENGTH random bytes (RANDOM_LENGTH * 8 bits)
 	const n = buf.reduce((calc, curr, i) => {
 		return calc | (curr << ((RANDOM_LENGTH - (i + 1)) * 8));
 	}, 0);
-	return n & BIT_MASK_18_BITS; // 18 bits, unsafe for 3 base62 chars
+	return n & BIT_MASK; // BITS_FOR_RANDOMNESS bits, possibly unsafe for RANDOM_LENGTH base62 chars
 }
 
-// because 3 base62 characters can only hold between 17 and 18 bits, generate a
-// random 18 bit number and make sure it does not exceed the max randomness
-// value that can fit into those 3 characters
+// because RANDOM_LENGTH base62 characters can only hold between
+// BITS_FOR_RANDOMNESS - 1 and BITS_FOR_RANDOMNESS bits, generate a random
+// BITS_FOR_RANDOMNESS bit number and make sure it does not exceed
+// MAX_RANDOMNESS_VALUE that can fit into those characters
 function safeRandomBits() {
 	let n: number;
 	do {
-		n = random18Bits();
+		n = unsafeRandomBits();
 	} while (n >= MAX_RANDOMNESS_VALUE);
 	return n;
 }
