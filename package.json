@@ -8,7 +8,7 @@
 	"types": "./dist/mod.d.ts",
 	"scripts": {
 		"fmt": "bunx biome check --write",
-		"build": "bunx tsc",
+		"build": "bunx tsc -p tsconfig.build.json",
 		"clean": "rm -rf ./dist",
 		"prepublish": "bun run clean && bun run build"
 	},
