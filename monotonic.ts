@@ -49,6 +49,6 @@ export function monotonicMUSLIDFactory(
 
 const mulsid = monotonicMUSLIDFactory();
 
-export function monotonicMULSID(timestamp: number = Date.now()) {
+export function monotonicMULSID(timestamp: number = Date.now()): string {
 	return mulsid(timestamp);
 }

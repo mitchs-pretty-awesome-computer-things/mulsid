@@ -1,0 +1,22 @@
+name: Publish
+on:
+  push:
+    tags: ["v*.*.*"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bunx tsc
+
+      - name: Publish to JSR
+        run: bunx jsr publish
+
+      - name: Publish to NPM
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public

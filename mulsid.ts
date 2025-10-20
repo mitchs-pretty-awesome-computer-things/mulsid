@@ -15,11 +15,11 @@ import {
 	TIMESTAMP_LENGTH,
 } from "./util";
 
-export function mulsid(timestamp: number = Date.now()) {
+export function mulsid(timestamp: number = Date.now()): string {
 	return encodeTime(getTimestamp(timestamp)) + encodeRandomness();
 }
 
-export function decodeTimestamp(id: string) {
+export function decodeTimestamp(id: string): number {
 	if (id.length !== MULSID_LENGTH) {
 		throw new Error(
 			`Incorrect MULSID length. Should be ${MULSID_LENGTH} but is ${id.length}`,
