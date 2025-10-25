@@ -27,21 +27,21 @@ describe("getTimestamp()", () => {
 
 describe("toBase62()", () => {
 	test("should encode to base62", () => {
-		expect(toBase62(BigInt(0), 3)).toEqual("000");
-		expect(toBase62(BigInt(BASE ** 3 - 1), 3)).toEqual("zzz");
+		expect(toBase62(0, 3)).toEqual("000");
+		expect(toBase62(BASE ** 3 - 1, 3)).toEqual("zzz");
 	});
 
 	test("should fail when width to small for given number", () => {
 		const width = 4;
-		const tooBig = BigInt(BASE ** width);
+		const tooBig = BASE ** width;
 		expect(() => toBase62(tooBig, width)).toThrow();
 	});
 });
 
 describe("fromBase62()", () => {
 	test("should decode from base62", () => {
-		expect(fromBase62("000")).toEqual(BigInt(0));
-		expect(fromBase62("zzz")).toEqual(BigInt(BASE ** 3 - 1));
+		expect(fromBase62("000")).toEqual(0);
+		expect(fromBase62("zzz")).toEqual(BASE ** 3 - 1);
 	});
 
 	test("should fail when encountering invalid base62 character", () => {

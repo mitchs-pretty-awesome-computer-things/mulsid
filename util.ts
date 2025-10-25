@@ -28,13 +28,13 @@ export function getTimestamp(time: number = Date.now()) {
 	return Math.floor(time / TICK_WIDTH);
 }
 
-export function toBase62(value: bigint, width: number) {
+export function toBase62(value: number, width: number) {
 	let str = "";
-	const B = BigInt(BASE);
-	while (value > 0n) {
-		const mod = Number(value % B);
+	let remaining = value;
+	while (remaining > 0) {
+		const mod = remaining % BASE;
 		str = ALPHABET[mod] + str;
-		value = value / B;
+		remaining = Math.floor(remaining / BASE);
 	}
 	if (str.length > width) {
 		throw new Error(`Overflow: expected width ${width}, got ${str.length}`);
@@ -43,14 +43,13 @@ export function toBase62(value: bigint, width: number) {
 }
 
 export function fromBase62(str: string) {
-	let n = 0n;
-	const B = BigInt(BASE);
+	let n = 0;
 	for (const char of str) {
 		const i = ALPHABET.indexOf(char);
 		if (i < 0) {
 			throw new Error(`Invalid base62 character: ${char}`);
 		}
-		n = n * B + BigInt(i);
+		n = n * BASE + i;
 	}
 	return n;
 }
@@ -65,7 +64,7 @@ export function encodeTime(timestamp: number) {
 			`Invalid timestamp: ${timestamp}. Value must be a positive integer less than ${MAX_TIMESTAMP_VALUE}`,
 		);
 	}
-	return toBase62(BigInt(timestamp), TIMESTAMP_LENGTH);
+	return toBase62(timestamp, TIMESTAMP_LENGTH);
 }
 
 function unsafeRandomBits() {
@@ -89,5 +88,5 @@ function safeRandomBits() {
 }
 
 export function encodeRandomness() {
-	return toBase62(BigInt(safeRandomBits()), RANDOM_LENGTH);
+	return toBase62(safeRandomBits(), RANDOM_LENGTH);
 }

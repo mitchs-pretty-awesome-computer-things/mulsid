@@ -17,7 +17,7 @@ import {
 
 function incrementRandomness(rand: string) {
 	const value = fromBase62(rand);
-	const incremented = value + BigInt(1);
+	const incremented = value + 1;
 	if (incremented > MAX_RANDOMNESS_VALUE) {
 		throw new Error("Randomness overflowed");
 	}

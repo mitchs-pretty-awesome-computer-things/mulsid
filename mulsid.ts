@@ -26,6 +26,6 @@ export function decodeTimestamp(id: string): number {
 		);
 	}
 	const time = id.slice(0, TIMESTAMP_LENGTH);
-	const ticks = Number(fromBase62(time));
+	const ticks = fromBase62(time);
 	return ticks * TICK_WIDTH;
 }
