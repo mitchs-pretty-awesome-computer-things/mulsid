@@ -2,15 +2,34 @@
 	"version": "0.0.1",
 	"name": "@mpact/mulsid",
 	"description": "Mini Unique Lexographically-Sortable IDs",
+	"homepage": "https://mulsid.mpact.llc",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mitchs-pretty-awesome-computer-things/mulsid"
+	},
+	"bugs": {
+		"url": "https://github.com/mitchs-pretty-awesome-computer-things/mulsid/issues"
+	},
+	"keywords": ["mulsid", "id", "lexicographically sortable", "sortable", "monotonic", "unique id", "short id", "lightweight", "esm", "typescript", "bun", "nodejs", "deno", "edge", "browser"],
+	"author": {
+		"name": "Mitchell Adair",
+		"url": "https://github.com/mitchwadair"
+	},
 	"license": "MIT",
 	"type": "module",
 	"main": "./dist/mod.js",
 	"types": "./dist/mod.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/mod.d.ts",
+			"import": "./dist/mod.js"
+		}
+	},
 	"scripts": {
 		"fmt": "bunx biome check --write",
 		"build": "bunx tsc -p tsconfig.build.json",
 		"clean": "rm -rf ./dist",
-		"prepublish": "bun run clean && bun run build"
+		"prepublishOnly": "bun run clean && bun run build"
 	},
 	"files": ["dist", "README.md", "LICENSE"],
 	"devDependencies": {
