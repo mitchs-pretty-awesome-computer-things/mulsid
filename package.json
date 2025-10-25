@@ -1,7 +1,7 @@
 {
 	"version": "0.0.1",
 	"name": "@mpact/mulsid",
-	"description": "Mini Unique Lexographically-Sortable IDs",
+	"description": "Mini Unique Lexicographically-Sortable IDs",
 	"homepage": "https://mulsid.mpact.llc",
 	"repository": {
 		"type": "git",

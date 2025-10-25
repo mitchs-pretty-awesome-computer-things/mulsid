@@ -1,5 +1,5 @@
 # MULSID
-Mini Unique Lexographically Sortable ID. A short (10 character) ID for improved database efficiency in inserts and storage. MULSID is not suitable certain use-cases, as it makes a compromise on randomness to favor shorter ID length.
+Mini Unique Lexicoographically Sortable ID. A short (10 character) ID for improved database efficiency in inserts and storage. MULSID is not suitable certain use-cases, as it makes a compromise on randomness to favor shorter ID length.
 
 ## About
 
