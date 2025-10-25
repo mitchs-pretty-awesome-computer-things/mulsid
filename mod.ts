@@ -5,5 +5,5 @@
  * @license MIT
  */
 
-export { monotonicMULSID } from "./monotonic";
-export { decodeTimestamp, mulsid } from "./mulsid";
+export { monotonicMULSID } from "./src/monotonic";
+export { decodeTimestamp, mulsid } from "./src/mulsid";

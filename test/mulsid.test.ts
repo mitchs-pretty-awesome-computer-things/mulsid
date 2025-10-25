@@ -6,14 +6,14 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { monotonicMULSID, monotonicMUSLIDFactory } from "../monotonic";
-import { decodeTimestamp, mulsid } from "../mulsid";
+import { monotonicMULSID, monotonicMUSLIDFactory } from "../src/monotonic";
+import { decodeTimestamp, mulsid } from "../src/mulsid";
 import {
 	MAX_TIMESTAMP_VALUE,
 	MULSID_LENGTH,
 	TICK_WIDTH,
 	TIMESTAMP_LENGTH,
-} from "../util";
+} from "../src/util";
 
 describe("mulsid()", () => {
 	test("has correct length", () => {

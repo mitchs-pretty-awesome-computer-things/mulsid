@@ -16,7 +16,7 @@ import {
 	RANDOM_LENGTH,
 	TIMESTAMP_LENGTH,
 	toBase62,
-} from "../util";
+} from "../src/util";
 
 describe("getTimestamp()", () => {
 	test("should return an integer", () => {

@@ -8,15 +8,15 @@
 const ALPHABET =
 	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" as const;
 const ZERO = ALPHABET[0];
-
+const THOUSAND_YEARS = 1000 * 60 * 60 * 24 * 365.25 * 1000; // a thousand years in ms
 export const BASE = ALPHABET.length;
+
 export const TIMESTAMP_LENGTH = 7;
-export const MAX_TIMESTAMP_VALUE = BASE ** TIMESTAMP_LENGTH - 1;
 export const RANDOM_LENGTH = 3;
+
+export const MAX_TIMESTAMP_VALUE = BASE ** TIMESTAMP_LENGTH - 1;
 export const MAX_RANDOMNESS_VALUE = BASE ** RANDOM_LENGTH;
 export const MULSID_LENGTH = TIMESTAMP_LENGTH + RANDOM_LENGTH;
-
-const THOUSAND_YEARS = 1000 * 60 * 60 * 24 * 365.25 * 1000; // a thousand years in ms
 // minimum ms per tick to be able to fit to TIMESTAMP_LENGTH and also generate
 // as many IDs as possible per-second with minimal collision risk
 export const TICK_WIDTH = Math.ceil(THOUSAND_YEARS / MAX_TIMESTAMP_VALUE);
