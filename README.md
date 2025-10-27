@@ -55,3 +55,11 @@ const time2 = decodeTime(id2); // 0
 const id3 = ulid(10); // 0000001uLE
 const time3 = decodeTime(id3) // 9
 ```
+
+## Learn More
+
+MULSID is not suitable for every use-case. To learn more about how MULSID works, the design choices made when developing it, and its pros and cons, you can read [this blog post](https://mpact.llc/blog/mini-unique-lexicographically-sortable-id).
+
+## MULSID in Action
+
+Check out [the demo](https://mulsid.mpact.llc) to see MULSID in action
