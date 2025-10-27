@@ -18,13 +18,13 @@ import {
 function incrementRandomness(rand: string) {
 	const value = fromBase62(rand);
 	const incremented = value + 1;
-	if (incremented > MAX_RANDOMNESS_VALUE) {
+	if (incremented >= MAX_RANDOMNESS_VALUE) {
 		throw new Error("Randomness overflowed");
 	}
 	return toBase62(incremented, RANDOM_LENGTH);
 }
 
-export function monotonicMUSLIDFactory(
+export function monotonicMULSIDFactory(
 	randomGenerator: () => string = encodeRandomness,
 ) {
 	let lastTick = -1;
@@ -47,7 +47,7 @@ export function monotonicMUSLIDFactory(
 	};
 }
 
-const mulsid = monotonicMUSLIDFactory();
+const mulsid = monotonicMULSIDFactory();
 
 export function monotonicMULSID(timestamp: number = Date.now()): string {
 	return mulsid(timestamp);

@@ -6,7 +6,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { monotonicMULSID, monotonicMUSLIDFactory } from "../src/monotonic";
+import { monotonicMULSID, monotonicMULSIDFactory } from "../src/monotonic";
 import { decodeTimestamp, mulsid } from "../src/mulsid";
 import {
 	MAX_TIMESTAMP_VALUE,
@@ -64,7 +64,7 @@ describe("decodeTimestamp()", () => {
 
 describe("monotonicMULSID()", () => {
 	test("should increment randomness by one for same timestamp", () => {
-		const mulsidStub = monotonicMUSLIDFactory(() => "000");
+		const mulsidStub = monotonicMULSIDFactory(() => "000");
 		const id1 = mulsidStub(0);
 		const id2 = mulsidStub(0);
 
@@ -73,14 +73,14 @@ describe("monotonicMULSID()", () => {
 	});
 
 	test("should properly increment each char of randomness", () => {
-		const mulsidStub1 = monotonicMUSLIDFactory(() => "00z");
+		const mulsidStub1 = monotonicMULSIDFactory(() => "00z");
 		const id1 = mulsidStub1(0);
 		const id2 = mulsidStub1(0);
 
 		expect(id1).toEqual("000000000z");
 		expect(id2).toEqual("0000000010");
 
-		const mulsidStub2 = monotonicMUSLIDFactory(() => "0zz");
+		const mulsidStub2 = monotonicMULSIDFactory(() => "0zz");
 		const id3 = mulsidStub2(0);
 		const id4 = mulsidStub2(0);
 
@@ -89,7 +89,7 @@ describe("monotonicMULSID()", () => {
 	});
 
 	test("should increment time when randomness overflows", () => {
-		const mulsidStub = monotonicMUSLIDFactory(() => "zzz");
+		const mulsidStub = monotonicMULSIDFactory(() => "zzz");
 		const id1 = mulsidStub(0);
 		const id2 = mulsidStub(0);
 
@@ -98,7 +98,7 @@ describe("monotonicMULSID()", () => {
 	});
 
 	test("should not increment randomness for different tick", () => {
-		const mulsidStub = monotonicMUSLIDFactory(() => "000");
+		const mulsidStub = monotonicMULSIDFactory(() => "000");
 		const id1 = mulsidStub(0);
 		const id2 = mulsidStub(TICK_WIDTH);
 
@@ -107,7 +107,7 @@ describe("monotonicMULSID()", () => {
 	});
 
 	test("should increment randomness for different tick without seed", () => {
-		const mulsidStub = monotonicMUSLIDFactory(() => "000");
+		const mulsidStub = monotonicMULSIDFactory(() => "000");
 		const id1 = mulsidStub();
 		const id2 = mulsidStub();
 		const id3 = mulsidStub();
