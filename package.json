@@ -1,5 +1,5 @@
 {
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"name": "@mpact/mulsid",
 	"description": "Mini Unique Lexicographically-Sortable IDs",
 	"homepage": "https://mulsid.mpact.llc",

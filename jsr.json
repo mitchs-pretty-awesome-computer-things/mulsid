@@ -1,6 +1,6 @@
 {
   "name": "@mpact/mulsid",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "license": "MIT",
   "exports": "./mod.ts",
   "exclude": [".github/**", "dist/**", "test/**", "biome.json", "tsconfig.json", "tsconfig.build.json", "bun.lock", ".gitignore"]
