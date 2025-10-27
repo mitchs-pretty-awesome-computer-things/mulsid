@@ -19,6 +19,12 @@ jobs:
       - name: Publish to JSR
         run: bunx jsr publish
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+          scope: "@mpact"
+
       - name: Publish to NPM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

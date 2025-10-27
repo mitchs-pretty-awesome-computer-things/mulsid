@@ -5,7 +5,7 @@
 	"homepage": "https://mulsid.mpact.llc",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/mitchs-pretty-awesome-computer-things/mulsid"
+		"url": "https://github.com/mitchs-pretty-awesome-computer-things/mulsid.git"
 	},
 	"bugs": {
 		"url": "https://github.com/mitchs-pretty-awesome-computer-things/mulsid/issues"
@@ -38,5 +38,8 @@
 	},
 	"peerDependencies": {
 		"typescript": "^5"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
