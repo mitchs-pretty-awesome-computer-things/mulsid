@@ -1,10 +1,3 @@
-/**
- * @copyright 2025 Mitch's Pretty Awesome Computer Things LLC
- * @author Mitchell Adair
- * @see https://github.com/mitchwadair
- * @license MIT
- */
-
 import { describe, expect, test } from "bun:test";
 import { monotonicMULSID, monotonicMULSIDFactory } from "../src/monotonic";
 import { decodeTimestamp, mulsid } from "../src/mulsid";
