@@ -3,7 +3,7 @@ Mini Unique Lexicographically Sortable ID. A short (10 character) ID for improve
 
 ## About
 
-MULSID uses a **BP-18-9** bit-packed layout internally. The 10-character base62 string encodes a single integer containing:
+MULSID uses a bit-packed layout internally. The 10-character base62 string encodes a single integer containing:
 
 - **Timestamp tick** (upper bits) — derived from the current time using 9 ms increments
 - **18-bit randomness** (lower bits) — 262,144 random states per tick
