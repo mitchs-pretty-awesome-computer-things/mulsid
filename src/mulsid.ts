@@ -6,26 +6,48 @@
  */
 
 import {
-	encodeRandomness,
-	encodeTime,
-	fromBase62,
+	decodePacked,
+	encodePacked,
 	getTimestamp,
-	MULSID_LENGTH,
+	MAX_TICK,
+	randomBits,
 	TICK_WIDTH,
-	TIMESTAMP_LENGTH,
 } from "./util";
 
+/**
+ * Generates a MULSID (Mini Unique Lexicographically-Sortable ID).
+ *
+ * The ID is a 10-character base62 string containing a bit-packed
+ * timestamp tick (upper portion) and 18 bits of randomness (lower portion).
+ * The tick is derived from the current time (or a provided timestamp)
+ * using the configured tick width (9 ms).
+ *
+ * @param timestamp A millisecond timestamp (defaults to `Date.now()`).
+ * @returns A 10-character base62 MULSID.
+ * @throws {RangeError} If the timestamp produces a tick outside the valid range.
+ */
 export function mulsid(timestamp: number = Date.now()): string {
-	return encodeTime(getTimestamp(timestamp)) + encodeRandomness();
-}
-
-export function decodeTimestamp(id: string): number {
-	if (id.length !== MULSID_LENGTH) {
-		throw new Error(
-			`Incorrect MULSID length. Should be ${MULSID_LENGTH} but is ${id.length}`,
+	const tick = getTimestamp(timestamp);
+	if (tick < 0 || tick > MAX_TICK) {
+		throw new RangeError(
+			`Invalid timestamp: ${timestamp}. Resulting tick ${tick} exceeds range [0, ${MAX_TICK}]`,
 		);
 	}
-	const time = id.slice(0, TIMESTAMP_LENGTH);
-	const ticks = fromBase62(time);
-	return ticks * TICK_WIDTH;
+	const randomness = randomBits();
+	return encodePacked(tick, randomness);
+}
+
+/**
+ * Extracts the approximate millisecond timestamp from a MULSID.
+ *
+ * The returned value is the tick multiplied by the tick width (9 ms)
+ * and represents the lower bound of the time window that produced the ID.
+ *
+ * @param id A 10-character base62 MULSID.
+ * @returns The approximate Unix millisecond timestamp.
+ * @throws {Error} If the ID has an invalid length or contains invalid characters.
+ */
+export function decodeTimestamp(id: string): number {
+	const { tick } = decodePacked(id);
+	return tick * TICK_WIDTH;
 }
