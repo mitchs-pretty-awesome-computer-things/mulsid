@@ -9,31 +9,34 @@ import { describe, expect, test } from "bun:test";
 import { monotonicMULSID, monotonicMULSIDFactory } from "../src/monotonic";
 import { decodeTimestamp, mulsid } from "../src/mulsid";
 import {
-	MAX_TIMESTAMP_VALUE,
+	decodePacked,
+	fromBase62,
+	MAX_TICK,
 	MULSID_LENGTH,
 	TICK_WIDTH,
-	TIMESTAMP_LENGTH,
 } from "../src/util";
+import { MAX_RANDOMNESS_VALUE } from "./util";
 
 describe("mulsid()", () => {
 	test("has correct length", () => {
 		expect(mulsid().length).toEqual(MULSID_LENGTH);
 	});
 
-	test("outputs correct timestamp encoding", () => {
-		const idZero = mulsid(0);
-		const timestampSegmentZero = idZero.substring(0, TIMESTAMP_LENGTH);
-		expect(timestampSegmentZero).toEqual("0000000");
+	test("outputs correct tick for timestamp 0", () => {
+		const id = mulsid(0);
+		const { tick } = decodePacked(id);
+		expect(tick).toEqual(0);
+	});
 
-		const idMax = mulsid(MAX_TIMESTAMP_VALUE * TICK_WIDTH);
-		const timestampSegmentMax = idMax.substring(0, TIMESTAMP_LENGTH);
-		expect(timestampSegmentMax).toEqual("zzzzzzz");
+	test("outputs correct tick for max timestamp", () => {
+		const id = mulsid(MAX_TICK * TICK_WIDTH);
+		const { tick } = decodePacked(id);
+		expect(tick).toEqual(MAX_TICK);
 	});
 
 	test("should fail when time is too large", () => {
-		const max = MAX_TIMESTAMP_VALUE * TICK_WIDTH;
+		const max = MAX_TICK * TICK_WIDTH;
 		const tooBig = max + TICK_WIDTH;
-		expect(() => mulsid(max)).not.toThrow();
 		expect(() => mulsid(tooBig)).toThrow();
 	});
 
@@ -54,7 +57,7 @@ describe("decodeTimestamp()", () => {
 
 	test("fails with invalid MULSID length", () => {
 		expect(() => decodeTimestamp("zzzz")).toThrow();
-		expect(() => decodeTimestamp("zzzzzzzzzzz")).toThrow();
+		expect(() => decodeTimestamp("z".repeat(MULSID_LENGTH + 1))).toThrow();
 	});
 
 	test("fails with invalid MULSID character", () => {
@@ -64,57 +67,56 @@ describe("decodeTimestamp()", () => {
 
 describe("monotonicMULSID()", () => {
 	test("should increment randomness by one for same timestamp", () => {
-		const mulsidStub = monotonicMULSIDFactory(() => "000");
-		const id1 = mulsidStub(0);
-		const id2 = mulsidStub(0);
+		const factory = monotonicMULSIDFactory(() => 0);
+		const id1 = factory(0);
+		const id2 = factory(0);
 
-		expect(id1).toEqual("0000000000");
-		expect(id2).toEqual("0000000001");
-	});
-
-	test("should properly increment each char of randomness", () => {
-		const mulsidStub1 = monotonicMULSIDFactory(() => "00z");
-		const id1 = mulsidStub1(0);
-		const id2 = mulsidStub1(0);
-
-		expect(id1).toEqual("000000000z");
-		expect(id2).toEqual("0000000010");
-
-		const mulsidStub2 = monotonicMULSIDFactory(() => "0zz");
-		const id3 = mulsidStub2(0);
-		const id4 = mulsidStub2(0);
-
-		expect(id3).toEqual("00000000zz");
-		expect(id4).toEqual("0000000100");
+		expect(decodePacked(id1)).toEqual({ tick: 0, randomness: 0 });
+		expect(decodePacked(id2)).toEqual({ tick: 0, randomness: 1 });
 	});
 
 	test("should increment time when randomness overflows", () => {
-		const mulsidStub = monotonicMULSIDFactory(() => "zzz");
-		const id1 = mulsidStub(0);
-		const id2 = mulsidStub(0);
+		const factory = monotonicMULSIDFactory(() => MAX_RANDOMNESS_VALUE - 1);
+		const id1 = factory(0);
+		const id2 = factory(0);
 
-		expect(id1).toEqual("0000000zzz");
-		expect(id2).toEqual("0000001zzz");
+		expect(decodePacked(id1)).toEqual({
+			tick: 0,
+			randomness: MAX_RANDOMNESS_VALUE - 1,
+		});
+		expect(decodePacked(id2)).toEqual({ tick: 1, randomness: 0 });
+	});
+
+	test("should encode correctly at overflow boundary", () => {
+		// Verify the string values at the overflow point
+		const factory = monotonicMULSIDFactory(() => MAX_RANDOMNESS_VALUE - 1);
+		const id1 = factory(0);
+		const id2 = factory(0);
+
+		const expectedPacked1 = BigInt(MAX_RANDOMNESS_VALUE - 1);
+		const expectedPacked2 = BigInt(MAX_RANDOMNESS_VALUE);
+
+		expect(fromBase62(id1)).toEqual(expectedPacked1);
+		expect(fromBase62(id2)).toEqual(expectedPacked2);
 	});
 
 	test("should not increment randomness for different tick", () => {
-		const mulsidStub = monotonicMULSIDFactory(() => "000");
-		const id1 = mulsidStub(0);
-		const id2 = mulsidStub(TICK_WIDTH);
+		const factory = monotonicMULSIDFactory(() => 0);
+		const id1 = factory(0);
+		const id2 = factory(TICK_WIDTH);
 
-		expect(id1).toEqual("0000000000");
-		expect(id2).toEqual("0000001000");
+		expect(decodePacked(id1)).toEqual({ tick: 0, randomness: 0 });
+		expect(decodePacked(id2)).toEqual({ tick: 1, randomness: 0 });
 	});
 
-	test("should increment randomness for different tick without seed", () => {
-		const mulsidStub = monotonicMULSIDFactory(() => "000");
-		const id1 = mulsidStub();
-		const id2 = mulsidStub();
-		const id3 = mulsidStub();
+	test("should increment for different tick without seed", () => {
+		const factory = monotonicMULSIDFactory(() => 0);
+		const id1 = factory();
+		const id2 = factory();
+		const id3 = factory();
 
-		expect(id1).toEndWith("000");
-		expect(id2).toEndWith("001");
-		expect(id3).toEndWith("002");
+		expect(fromBase62(id2)).toEqual(fromBase62(id1) + 1n);
+		expect(fromBase62(id3)).toEqual(fromBase62(id2) + 1n);
 	});
 
 	test("timestamp tick matches correct time window", () => {
@@ -124,5 +126,31 @@ describe("monotonicMULSID()", () => {
 
 		expect(now).toBeGreaterThanOrEqual(actual);
 		expect(now).toBeLessThan(actual + TICK_WIDTH);
+	});
+
+	test("should overflow after exhausing 18 bits of randomness", () => {
+		// Start with randomness at max; next two calls should overflow twice
+		const factory = monotonicMULSIDFactory(() => MAX_RANDOMNESS_VALUE - 1);
+		const id1 = factory(0); // tick=0, rand=262143
+		const id2 = factory(0); // overflow: tick=1, rand=0
+		const id3 = factory(0); // tick=1, rand=1
+
+		expect(decodePacked(id1)).toEqual({
+			tick: 0,
+			randomness: MAX_RANDOMNESS_VALUE - 1,
+		});
+		expect(decodePacked(id2)).toEqual({ tick: 1, randomness: 0 });
+		expect(decodePacked(id3)).toEqual({ tick: 1, randomness: 1 });
+	});
+
+	test("should handle increasing tick then same tick increment", () => {
+		const factory = monotonicMULSIDFactory(() => 0);
+		const id1 = factory(0); // tick=0, rand=0
+		const id2 = factory(TICK_WIDTH); // tick=1, rand=0 (new tick)
+		const id3 = factory(TICK_WIDTH); // tick=1, rand=1 (increment)
+
+		expect(decodePacked(id1)).toEqual({ tick: 0, randomness: 0 });
+		expect(decodePacked(id2)).toEqual({ tick: 1, randomness: 0 });
+		expect(decodePacked(id3)).toEqual({ tick: 1, randomness: 1 });
 	});
 });
