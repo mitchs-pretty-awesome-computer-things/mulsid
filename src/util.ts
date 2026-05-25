@@ -3,7 +3,7 @@ const ALPHABET =
 const ZERO = ALPHABET[0];
 
 /** Number of unique digits in base62 (0-9, A-Z, a-z). */
-export const BASE = ALPHABET.length;
+export const BASE = BigInt(ALPHABET.length);
 
 /** Total length of a MULSID in characters. */
 export const MULSID_LENGTH = 10;
@@ -21,7 +21,7 @@ const RANDOMNESS_MASK = (1 << RANDOMNESS_BITS) - 1;
 export const EPOCH = 0;
 
 /** Maximum value representable in 10 base62 characters. */
-export const MAX_MULSID_VALUE = 62n ** 10n - 1n;
+export const MAX_MULSID_VALUE = BASE ** 10n - 1n;
 
 /**
  * Maximum allowed timestamp tick.
@@ -57,9 +57,9 @@ export function toBase62(value: bigint, width: number): string {
 	let str = "";
 	let remaining = value;
 	while (remaining > 0n) {
-		const mod = Number(remaining % 62n);
+		const mod = Number(remaining % BASE);
 		str = ALPHABET[mod] + str;
-		remaining /= 62n;
+		remaining /= BASE;
 	}
 	if (str.length > width) {
 		throw new Error(`Overflow: expected width ${width}, got ${str.length}`);
@@ -78,7 +78,7 @@ export function fromBase62(str: string): bigint {
 		if (i < 0) {
 			throw new Error(`Invalid base62 character: ${char}`);
 		}
-		n = n * 62n + BigInt(i);
+		n = n * BASE + BigInt(i);
 	}
 	return n;
 }

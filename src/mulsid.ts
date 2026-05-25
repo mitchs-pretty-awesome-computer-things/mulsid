@@ -19,9 +19,7 @@ import {
  * @throws {RangeError} If the timestamp produces a tick outside the valid range.
  */
 export function mulsid(timestamp: number = Date.now()): string {
-	const tick = getTimestamp(timestamp);
-	const randomness = randomBits();
-	return encodePacked(tick, randomness);
+	return encodePacked(getTimestamp(timestamp), randomBits());
 }
 
 /**
@@ -35,6 +33,5 @@ export function mulsid(timestamp: number = Date.now()): string {
  * @throws {Error} If the ID has an invalid length or contains invalid characters.
  */
 export function decodeTimestamp(id: string): number {
-	const { tick } = decodePacked(id);
-	return tick * TICK_WIDTH;
+	return decodePacked(id).tick * TICK_WIDTH;
 }

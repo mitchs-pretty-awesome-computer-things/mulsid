@@ -26,12 +26,12 @@ describe("getTimestamp()", () => {
 describe("toBase62()", () => {
 	test("should encode to base62", () => {
 		expect(toBase62(0n, 3)).toEqual("000");
-		expect(toBase62(BigInt(BASE ** 3 - 1), 3)).toEqual("zzz");
+		expect(toBase62(BASE ** 3n - 1n, 3)).toEqual("zzz");
 	});
 
 	test("should fail when width is too small for given number", () => {
 		const width = 4;
-		const tooBig = BigInt(BASE ** width);
+		const tooBig = BASE ** BigInt(width);
 		expect(() => toBase62(tooBig, width)).toThrow();
 	});
 
@@ -46,7 +46,7 @@ describe("toBase62()", () => {
 describe("fromBase62()", () => {
 	test("should decode from base62", () => {
 		expect(fromBase62("000")).toEqual(0n);
-		expect(fromBase62("zzz")).toEqual(BigInt(BASE ** 3 - 1));
+		expect(fromBase62("zzz")).toEqual(BASE ** 3n - 1n);
 	});
 
 	test("should fail when encountering invalid base62 character", () => {
@@ -54,7 +54,7 @@ describe("fromBase62()", () => {
 	});
 
 	test("should round-trip with toBase62", () => {
-		const value = BigInt(BASE ** 7 - 1);
+		const value = BASE ** 7n - 1n;
 		expect(fromBase62(toBase62(value, 7))).toEqual(value);
 	});
 });
