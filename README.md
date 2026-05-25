@@ -36,7 +36,7 @@ To generate a random MULSID, you can import and use the `mulsid` function
 ```ts
 import { mulsid } from "@mpact/mulsid";
 
-const id = mulsid() // 0uXqlC3DGY
+const id = mulsid() // 3pPgiiTJ9J
 ```
 
 You can also guarantee a monotonically increasing ID by using the `monotonicMULSID` function
@@ -44,8 +44,8 @@ You can also guarantee a monotonically increasing ID by using the `monotonicMULS
 ```ts
 import { monotonicMULSID } from "@mpact/mulsid";
 
-const id1 = monotonicMULSID();
-const id2 = monotonicMULSID(); // Always lexicographically greater than id1
+const id1 = monotonicMULSID(); // 3pPgn9dUpT
+const id2 = monotonicMULSID(); // 3pPgn9dUpU (Always lexicographically greater than id1)
 ```
 
 You can also determine the time the MULSID was generated within 9 milliseconds using the `decodeTimestamp` function
@@ -53,9 +53,12 @@ You can also determine the time the MULSID was generated within 9 milliseconds u
 ```ts
 import { mulsid, decodeTimestamp } from "@mpact/mulsid";
 
-const id = mulsid(0);
-const time = decodeTimestamp(id); // 0 (the tick rounded down to the nearest 9 ms boundary)
+const id = mulsid(0); // 0000000vaS
+const time = decodeTimestamp(id); // 0 
 
-const id2 = mulsid(10);
-const time2 = decodeTimestamp(id2); // 9
+const id2 = mulsid(4); // 0000000tQq
+const time2 = decodeTimestamp(id); // 0 (the tick rounded down to the nearest 9 ms boundary)
+
+const id3 = mulsid(10); // 00000018nH
+const time3 = decodeTimestamp(id2); // 9
 ```
