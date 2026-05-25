@@ -54,7 +54,7 @@ You can also determine the time the MULSID was generated within 9 milliseconds u
 import { mulsid, decodeTimestamp } from "@mpact/mulsid";
 
 const id = mulsid(0); // 0000000vaS
-const time = decodeTimestamp(id); // 0 
+const time = decodeTimestamp(id); // 0
 
 const id2 = mulsid(4); // 0000000tQq
 const time2 = decodeTimestamp(id); // 0 (the tick rounded down to the nearest 9 ms boundary)
