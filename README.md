@@ -10,7 +10,7 @@ MULSID uses a bit-packed layout internally. The 10-character base62 string encod
 
 This gives approximately **913 years** of unique ID coverage from the Unix epoch.
 
-You can read more about MULSID in [this blog post](https://mpact.llc/blog/mini-unique-lexicographically-sortable-id). Check out [the demo](https://mulsid.mpact.llc) to see MULSID in action.
+You can read more about MULSID in [this blog post](https://mpact.llc/blog/revisiting-mulsids-design). Check out [the demo](https://mulsid.mpact.llc) to see MULSID in action.
 
 ## Install
 
