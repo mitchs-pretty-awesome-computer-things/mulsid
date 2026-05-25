@@ -84,6 +84,16 @@ export function fromBase62(str: string): bigint {
 }
 
 /**
+ * Packs a timestamp tick and randomness value into a bigint.
+ * @param tick The timestamp tick (0 to MAX_TICK).
+ * @param randomness The randomness value (0 to 2^RANDOMNESS_BITS - 1).
+ * @returns A bigint representing the packed tick and randomness.
+ */
+export function packBits(tick: number, randomness: number): bigint {
+	return (BigInt(tick) << BigInt(RANDOMNESS_BITS)) | BigInt(randomness);
+}
+
+/**
  * Packs a timestamp tick and randomness value into a 10-character MULSID.
  * @param tick The timestamp tick (0 to MAX_TICK).
  * @param randomness The randomness value (0 to 2^RANDOMNESS_BITS - 1).
@@ -96,7 +106,7 @@ export function encodePacked(tick: number, randomness: number): string {
 			`Invalid tick: ${tick}. Must be an integer between 0 and ${MAX_TICK}`,
 		);
 	}
-	const packed = (BigInt(tick) << BigInt(RANDOMNESS_BITS)) | BigInt(randomness);
+	const packed = packBits(tick, randomness);
 	return toBase62(packed, MULSID_LENGTH);
 }
 

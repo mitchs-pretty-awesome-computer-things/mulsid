@@ -2,6 +2,7 @@ import {
 	getTimestamp,
 	MAX_MULSID_VALUE,
 	MULSID_LENGTH,
+	packBits,
 	RANDOMNESS_BITS,
 	randomBits,
 	toBase62,
@@ -35,9 +36,7 @@ export function monotonicMULSIDFactory(
 		const lastTick = Number(lastPacked >> BigInt(RANDOMNESS_BITS));
 
 		if (currentTick > lastTick) {
-			lastPacked =
-				(BigInt(currentTick) << BigInt(RANDOMNESS_BITS)) |
-				BigInt(randomGenerator());
+			lastPacked = packBits(currentTick, randomGenerator());
 		} else {
 			lastPacked += 1n;
 		}
