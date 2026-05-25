@@ -2,7 +2,6 @@ import {
 	decodePacked,
 	encodePacked,
 	getTimestamp,
-	MAX_TICK,
 	randomBits,
 	TICK_WIDTH,
 } from "./util";
@@ -21,11 +20,6 @@ import {
  */
 export function mulsid(timestamp: number = Date.now()): string {
 	const tick = getTimestamp(timestamp);
-	if (tick < 0 || tick > MAX_TICK) {
-		throw new RangeError(
-			`Invalid timestamp: ${timestamp}. Resulting tick ${tick} exceeds range [0, ${MAX_TICK}]`,
-		);
-	}
 	const randomness = randomBits();
 	return encodePacked(tick, randomness);
 }

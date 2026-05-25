@@ -18,6 +18,9 @@ describe("getTimestamp()", () => {
 		expect(getTimestamp()).toBeInteger();
 		expect(getTimestamp(1.1)).toBeInteger();
 	});
+	test("should throw if resulting tick is negative", () => {
+		expect(() => getTimestamp(-1)).toThrow();
+	});
 });
 
 describe("toBase62()", () => {

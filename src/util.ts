@@ -25,19 +25,28 @@ export const MAX_MULSID_VALUE = 62n ** 10n - 1n;
 
 /**
  * Maximum allowed timestamp tick.
- * Derived by shifting the maximum 10-character base62 value right by
- * RANDOMNESS_BITS (18). This gives the maximum tick that can fit in the
- * packed integer alongside a randomness value.
+ * Derived from MAX_MULSID_VALUE - RANDOMNESS_MASK, then right-shifted by RANDOMNESS_BITS.
+ * This gives the maximum tick such that (tick << RANDOMNESS_BITS) | RANDOMNESS_MASK
+ * still fits within MAX_MULSID_VALUE.
  */
-export const MAX_TICK = Number(MAX_MULSID_VALUE >> BigInt(RANDOMNESS_BITS)) - 1;
+export const MAX_TICK = Number(
+	(MAX_MULSID_VALUE - BigInt(RANDOMNESS_MASK)) >> BigInt(RANDOMNESS_BITS),
+);
 
 /**
  * Computes the timestamp tick for a given millisecond time.
  * @param time Millisecond timestamp (defaults to `Date.now()`).
+ * @throws If the resulting tick is not a non-negative integer within the valid range.
  * @returns The tick number relative to the configured epoch.
  */
 export function getTimestamp(time: number = Date.now()): number {
-	return Math.floor((time - EPOCH) / TICK_WIDTH);
+	const tick = Math.floor((time - EPOCH) / TICK_WIDTH);
+	if (tick < 0 || tick > MAX_TICK) {
+		throw new RangeError(
+			`Invalid timestamp: ${time}. Resulting tick ${tick} exceeds range [0, ${MAX_TICK}]`,
+		);
+	}
+	return tick;
 }
 
 /**

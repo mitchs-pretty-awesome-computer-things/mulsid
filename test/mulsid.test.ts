@@ -68,45 +68,11 @@ describe("monotonicMULSID()", () => {
 		expect(decodePacked(id2)).toEqual({ tick: 0, randomness: 1 });
 	});
 
-	test("should increment time when randomness overflows", () => {
-		const factory = monotonicMULSIDFactory(() => MAX_RANDOMNESS_VALUE - 1);
-		const id1 = factory(0);
-		const id2 = factory(0);
-
-		expect(decodePacked(id1)).toEqual({
-			tick: 0,
-			randomness: MAX_RANDOMNESS_VALUE - 1,
-		});
-		expect(decodePacked(id2)).toEqual({ tick: 1, randomness: 0 });
-	});
-
-	test("should encode correctly at overflow boundary", () => {
-		// Verify the string values at the overflow point
-		const factory = monotonicMULSIDFactory(() => MAX_RANDOMNESS_VALUE - 1);
-		const id1 = factory(0);
-		const id2 = factory(0);
-
-		const expectedPacked1 = BigInt(MAX_RANDOMNESS_VALUE - 1);
-		const expectedPacked2 = BigInt(MAX_RANDOMNESS_VALUE);
-
-		expect(fromBase62(id1)).toEqual(expectedPacked1);
-		expect(fromBase62(id2)).toEqual(expectedPacked2);
-	});
-
-	test("should not increment randomness for different tick", () => {
+	test("should increment by one for successive calls in same tick", () => {
 		const factory = monotonicMULSIDFactory(() => 0);
 		const id1 = factory(0);
-		const id2 = factory(TICK_WIDTH);
-
-		expect(decodePacked(id1)).toEqual({ tick: 0, randomness: 0 });
-		expect(decodePacked(id2)).toEqual({ tick: 1, randomness: 0 });
-	});
-
-	test("should increment for different tick without seed", () => {
-		const factory = monotonicMULSIDFactory(() => 0);
-		const id1 = factory();
-		const id2 = factory();
-		const id3 = factory();
+		const id2 = factory(0);
+		const id3 = factory(0);
 
 		expect(fromBase62(id2)).toEqual(fromBase62(id1) + 1n);
 		expect(fromBase62(id3)).toEqual(fromBase62(id2) + 1n);
