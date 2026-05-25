@@ -106,8 +106,7 @@ export function encodePacked(tick: number, randomness: number): string {
 			`Invalid tick: ${tick}. Must be an integer between 0 and ${MAX_TICK}`,
 		);
 	}
-	const packed = packBits(tick, randomness);
-	return toBase62(packed, MULSID_LENGTH);
+	return toBase62(packBits(tick, randomness), MULSID_LENGTH);
 }
 
 /**
