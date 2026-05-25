@@ -57,8 +57,8 @@ const id = mulsid(0); // 0000000vaS
 const time = decodeTimestamp(id); // 0
 
 const id2 = mulsid(4); // 0000000tQq
-const time2 = decodeTimestamp(id); // 0 (the tick rounded down to the nearest 9 ms boundary)
+const time2 = decodeTimestamp(id2); // 0 (the tick rounded down to the nearest 9 ms boundary)
 
 const id3 = mulsid(10); // 00000018nH
-const time3 = decodeTimestamp(id2); // 9
+const time3 = decodeTimestamp(id3); // 9
 ```
